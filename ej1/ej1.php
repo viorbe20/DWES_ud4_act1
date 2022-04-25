@@ -10,9 +10,11 @@ include "config/tests_cnf.php";
 
 $processForm = false;
 $showTest1 = true;
+$showResultTest1 = false;
 $showTest2 = false;
 $showTest3 = false;
 
+//Selección tipo test
 if (isset($_POST['start'])) {
     $selectedTest = $_POST['selectedTest'];
     $processForm = false;
@@ -27,6 +29,30 @@ if (isset($_POST['start'])) {
         case '1':
             $showTest3 = true;
             break;
+    }
+}
+
+if (isset($_POST['submitTest1'])) {
+    $showTest1 = false;
+    $showResultTest1 = true; 
+    
+    //Guardamos las respuestas seleccionadas
+    foreach ($aTests as $key => $value) {
+        
+        if ($key == 0) {
+            
+            foreach ($value as $level1 => $value) {
+                
+                if ($level1 == "Preguntas") {
+                    
+                    //Recorre como tantas preguntas tenga el test
+                    for ($i=0; $i < count($value); $i++) { 
+                        echo($_POST['answerQ' . $i+1 ]);
+
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -48,6 +74,7 @@ if ($processForm) {
 <?php
 }
 
+//Muestra test1
 if ($showTest1) {
 ?>
     <style>
@@ -94,13 +121,13 @@ if ($showTest1) {
                             echo "<p class='answer'>Respuestas</p>";
 
                             echo "<label for='a'>" . $value2['respuestas'][0] . "</label>";
-                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . "id='a'><br>";
+                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . " id='a'/><br>";
 
                             echo "<label for='a'>" . $value2['respuestas'][1] . "</label>";
-                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . "id='b'><br>";
+                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . " id='b'/><br>";
 
                             echo "<label for='a'>" . $value2['respuestas'][2] . "</label>";
-                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . "id='c'><br>";
+                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . " id='c'/><br>";
 
                             echo ("</div>");
                         }
@@ -115,6 +142,11 @@ if ($showTest1) {
     </main>
 <?php
 
+}
+
+//MUestra resultados test1
+if ($showResultTest1) {
+    
 }
 
 if ($showTest2) {
