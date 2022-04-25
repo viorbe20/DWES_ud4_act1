@@ -6,8 +6,8 @@
  * @date April 2022
  */
 include "config/tests_cnf.php";
-$processForm = true;
-$showTest1 = false;
+$processForm = false;
+$showTest1 = true;
 $showTest2 = false;
 $showTest3 = false;
 
@@ -48,8 +48,54 @@ if ($processForm) {
 
 if ($showTest1) {
 ?>
-    <h1>Test 1: Permiso B</h1>
+    <style>
+        .question {
+            background-color: #EBEFF0;
+        }
 
+        h3 {
+            background-color: #2164A5;
+            padding: 10px;
+            color: white;
+        }
+
+        .answer {
+            font-weight: bold;
+        }
+    </style>
+    <form action="" method="post">
+        <h1>Test 1: Permiso B</h1>
+        <?php
+        foreach ($aTests as $key => $value) {
+            if ($key == 0) {
+                foreach ($value as $level1 => $value) {
+                    if ($level1 == "Preguntas") {
+                        //var_dump($value);
+                        foreach ($value as $level2 => $value2) {
+                            //echo('<br>'. $level2);// 0 a 9
+                            echo "<div class='question'>";
+                            echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
+                            echo "<p class='answer'>Respuestas</p>";
+
+                            echo "<label for='a'>" . $value2['respuestas'][0] . "</label>";
+                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . "id='a'><br>";
+
+                            echo "<label for='a'>" . $value2['respuestas'][1] . "</label>";
+                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . "id='b'><br>";
+
+                            echo "<label for='a'>" . $value2['respuestas'][2] . "</label>";
+                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . "id='c'><br>";
+
+                            echo ("</div>");
+                        }
+                    }
+                }
+            }
+        }
+        ?>
+        <br>
+        <button type="submit" name="submitTest1">Enviar</button>
+    </form>
 <?php
 
 }
