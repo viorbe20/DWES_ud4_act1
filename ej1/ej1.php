@@ -6,6 +6,8 @@
  * @date April 2022
  */
 include "config/tests_cnf.php";
+//include "dir_img_test1";
+
 $processForm = false;
 $showTest1 = true;
 $showTest2 = false;
@@ -49,6 +51,14 @@ if ($processForm) {
 if ($showTest1) {
 ?>
     <style>
+        main{
+            padding: 10px;
+        }
+        h1 {
+            *color: blue;
+            padding: 10px;
+            text-align: center;
+        }
         .question {
             background-color: #EBEFF0;
         }
@@ -63,6 +73,7 @@ if ($showTest1) {
             font-weight: bold;
         }
     </style>
+    <main>
     <form action="" method="post">
         <h1>Test 1: Permiso B</h1>
         <?php
@@ -75,6 +86,11 @@ if ($showTest1) {
                             //echo('<br>'. $level2);// 0 a 9
                             echo "<div class='question'>";
                             echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
+                            //Comprueba si la foto existe
+                            if (file_exists("dir_img_test1/img" . $value2['idPregunta'] . ".jpg")) {
+                                echo "<img src=dir_img_test1/img" . $value2['idPregunta'] . ".jpg>";
+                            }
+                            
                             echo "<p class='answer'>Respuestas</p>";
 
                             echo "<label for='a'>" . $value2['respuestas'][0] . "</label>";
@@ -96,6 +112,7 @@ if ($showTest1) {
         <br>
         <button type="submit" name="submitTest1">Enviar</button>
     </form>
+    </main>
 <?php
 
 }
