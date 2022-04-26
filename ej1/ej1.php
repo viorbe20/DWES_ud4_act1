@@ -6,13 +6,43 @@
  * @date April 2022
  */
 include "config/tests_cnf.php";
-//include "dir_img_test1";
 
 $processForm = false;
 $showTest1 = true;
 $showResultTest1 = false;
 $showTest2 = false;
 $showTest3 = false;
+$correctAnswer;
+$options = ["a", "b", "c"];
+
+/**
+ * Devuelve un array de respuestas.
+ * Recibe como parámetro el número del test del que quiero las respuestas
+ */
+function getAnswers($aTests, $testNumber)
+{
+
+    $answers = array();
+
+    foreach ($aTests as $key => $value) {
+
+        if ($key == $testNumber) {
+
+            foreach ($value as $level1 => $value) {
+
+                if ($level1 == "Corrector") {
+                    $answers = $value;
+                    return $answers;
+                }
+            }
+        }
+    }
+};
+
+//Cargamos arrays con las respuestas de cada test
+$answersTest1 = getAnswers($aTests, 0);
+$answersTest2 = getAnswers($aTests, 1);
+$answersTest3 = getAnswers($aTests, 2);
 
 //Selección tipo test
 if (isset($_POST['start'])) {
@@ -34,21 +64,33 @@ if (isset($_POST['start'])) {
 
 if (isset($_POST['submitTest1'])) {
     $showTest1 = false;
-    $showResultTest1 = true; 
-    
-    //Guardamos las respuestas seleccionadas
-    foreach ($aTests as $key => $value) {
-        
-        if ($key == 0) {
-            
-            foreach ($value as $level1 => $value) {
-                
-                if ($level1 == "Preguntas") {
-                    
-                    //Recorre como tantas preguntas tenga el test
-                    for ($i=0; $i < count($value); $i++) { 
-                        echo($_POST['answerQ' . $i+1 ]);
+    $showResultTest1 = true;
 
+    //Guardamos las respuestas seleccionadas
+    //var_dump($_POST); => Imprime número de pregunta e índice (0,1,2) según respuesta
+    foreach ($aTests as $key => $value) {
+
+        if ($key == 0) {
+
+            foreach ($value as $level1 => $value) {
+
+                if ($level1 == "Preguntas") {
+
+                    //Recorre como tantas preguntas tenga el test
+                    for ($i = 0; $i < count($value); $i++) {
+
+                        //"Corrector"=>array("a","b","c", "c", "c", "a", "c", "a", "c", "a"),
+                        //Comprobamos si está respondida o no
+                        if (isset($_POST[$i])) {
+                            //Si ha respondido la pasamos a letra
+                            if ($answersTest1[$i-1] == $options[$_POST[$i]]) {
+                                echo('<br>Correcta') ;
+                            } else {
+                                echo('<br>Incorrecta') ;
+                            }
+                        } else {
+                            //echo('<br>No contesta') ;
+                        }
                     }
                 }
             }
@@ -78,14 +120,16 @@ if ($processForm) {
 if ($showTest1) {
 ?>
     <style>
-        main{
+        main {
             padding: 10px;
         }
+
         h1 {
             *color: blue;
             padding: 10px;
             text-align: center;
         }
+
         .question {
             background-color: #EBEFF0;
         }
@@ -101,44 +145,42 @@ if ($showTest1) {
         }
     </style>
     <main>
-    <form action="" method="post">
-        <h1>Test 1: Permiso B</h1>
-        <?php
-        foreach ($aTests as $key => $value) {
-            if ($key == 0) {
-                foreach ($value as $level1 => $value) {
-                    if ($level1 == "Preguntas") {
-                        //var_dump($value);
-                        foreach ($value as $level2 => $value2) {
-                            //echo('<br>'. $level2);// 0 a 9
-                            echo "<div class='question'>";
-                            echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
-                            //Comprueba si la foto existe
-                            if (file_exists("dir_img_test1/img" . $value2['idPregunta'] . ".jpg")) {
-                                echo "<img src=dir_img_test1/img" . $value2['idPregunta'] . ".jpg>";
+        <form action="" method="post">
+            <h1>Test 1: Permiso B</h1>
+            <?php
+            foreach ($aTests as $key => $value) {
+                if ($key == 0) {
+                    foreach ($value as $level1 => $value) {
+                        if ($level1 == "Preguntas") {
+                            //var_dump($value);
+                            foreach ($value as $level2 => $value2) {
+                                //echo('<br>'. $level2);// 0 a 9
+                                echo "<div class='question'>";
+                                echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
+
+                                //Comprueba si la foto existe
+                                if (file_exists("dir_img_test1/img" . $value2['idPregunta'] . ".jpg")) {
+                                    echo "<img src=dir_img_test1/img" . $value2['idPregunta'] . ".jpg>";
+                                }
+
+                                echo "<p class='answer'>Respuestas</p>";
+
+                                //Imprime posibles respuestas
+                                for ($i = 0; $i < count($value2['respuestas']); $i++) {
+                                    echo "<label for='a'>" . $value2['respuestas'][$i] . "</label>";
+                                    echo "<input type=\"radio\" name=" . $value2['idPregunta'] . " value=\"$i\"/>";
+                                    echo('<br>') ;
+                                }
+                                echo ("</div>");
                             }
-                            
-                            echo "<p class='answer'>Respuestas</p>";
-
-                            echo "<label for='a'>" . $value2['respuestas'][0] . "</label>";
-                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . " id='a'/><br>";
-
-                            echo "<label for='a'>" . $value2['respuestas'][1] . "</label>";
-                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . " id='b'/><br>";
-
-                            echo "<label for='a'>" . $value2['respuestas'][2] . "</label>";
-                            echo "<input type='radio' name='answerQ" . $value2['idPregunta'] . " id='c'/><br>";
-
-                            echo ("</div>");
                         }
                     }
                 }
             }
-        }
-        ?>
-        <br>
-        <button type="submit" name="submitTest1">Enviar</button>
-    </form>
+            ?>
+            <br>
+            <button type="submit" name="submitTest1">Enviar</button>
+        </form>
     </main>
 <?php
 
@@ -146,7 +188,6 @@ if ($showTest1) {
 
 //MUestra resultados test1
 if ($showResultTest1) {
-    
 }
 
 if ($showTest2) {
