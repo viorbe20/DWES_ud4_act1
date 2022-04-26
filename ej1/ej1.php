@@ -14,6 +14,8 @@ $showTest2 = false;
 $showTest3 = false;
 $correctAnswer;
 $options = ["a", "b", "c"];
+// $checked = array();
+$message = "";
 
 /**
  * Devuelve un array de respuestas.
@@ -63,8 +65,9 @@ if (isset($_POST['start'])) {
 }
 
 if (isset($_POST['submitTest1'])) {
-    $showTest1 = false;
+    $showTest1 = true;
     $showResultTest1 = true;
+    $a_userAnswers = array();
 
     //Guardamos las respuestas seleccionadas
     //var_dump($_POST); => Imprime número de pregunta e índice (0,1,2) según respuesta
@@ -83,19 +86,21 @@ if (isset($_POST['submitTest1'])) {
                         //Comprobamos si está respondida o no
                         if (isset($_POST[$i])) {
                             //Si ha respondido la pasamos a letra
-                            if ($answersTest1[$i-1] == $options[$_POST[$i]]) {
-                                echo('<br>Correcta') ;
+                            if ($answersTest1[$i] == $options[$_POST[$i]]) {
+                                array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "right"));
                             } else {
-                                echo('<br>Incorrecta') ;
+                                array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "wrong"));
                             }
                         } else {
-                            //echo('<br>No contesta') ;
+                            array_push($a_userAnswers, array("option" => "nsnc", "status" => "nsnc"));
                         }
                     }
                 }
             }
         }
     }
+
+    //var_dump($checked);
 }
 
 
@@ -143,9 +148,24 @@ if ($showTest1) {
         .answer {
             font-weight: bold;
         }
+
+        .right {
+            background-color: green;
+            color: white;
+        }
+
+        .wrong {
+            background-color: red;
+            color: white;
+        }
+
+        .nsnc {
+            color: black;
+        }
     </style>
     <main>
         <form action="" method="post">
+            <button type="submit" name="submitTest1">Enviar</button>
             <h1>Test 1: Permiso B</h1>
             <?php
             foreach ($aTests as $key => $value) {
@@ -154,6 +174,7 @@ if ($showTest1) {
                         if ($level1 == "Preguntas") {
                             //var_dump($value);
                             foreach ($value as $level2 => $value2) {
+
                                 //echo('<br>'. $level2);// 0 a 9
                                 echo "<div class='question'>";
                                 echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
@@ -167,10 +188,32 @@ if ($showTest1) {
 
                                 //Imprime posibles respuestas
                                 for ($i = 0; $i < count($value2['respuestas']); $i++) {
-                                    echo "<label for='a'>" . $value2['respuestas'][$i] . "</label>";
-                                    echo "<input type=\"radio\" name=" . $value2['idPregunta'] . " value=\"$i\"/>";
-                                    echo('<br>') ;
+
+                                    //Muestra aciertos
+                                    if ($showResultTest1) {
+                                        $message = $answersTest1[$level2];
+
+                                        if (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "right")) {
+                                            $className = "right";
+                                        } elseif (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "wrong")) {
+                                            $className = "wrong";
+                                        } else {
+                                            $className = "nsnc";
+                                        }
+                                    } else {
+                                        $className = "";
+                                    }
+
+                                    echo "<label class=\"$className\">" . $value2['respuestas'][$i] . "</label>";
+                                    $name = ($value2['idPregunta'] - 1);
+                                    echo "<input type=\"radio\" name=" . $name . " value=\"$i\"/>";
+                                    echo ('<br>');
                                 }
+                                echo '<br>';
+                                if ($showResultTest1) {
+                                    echo "<span> Respuesta correcta: " . $message . "</span>";
+                                }
+
                                 echo ("</div>");
                             }
                         }
@@ -186,9 +229,7 @@ if ($showTest1) {
 
 }
 
-//MUestra resultados test1
-if ($showResultTest1) {
-}
+
 
 if ($showTest2) {
 ?>
