@@ -54,23 +54,13 @@ if (isset($_POST['start'])) {
     switch ($selectedTest) {
         case '1':
             $showTest1 = true;
-            $processForm = false;
             break;
-        case '2':
+        case '1':
             $showTest2 = true;
-            $processForm = false;
             break;
-        case '3':
+        case '1':
             $showTest3 = true;
-            $processForm = false;
             break;
-    }
-
-     //Establecemos cookie
-     if (!isset($_COOKIE['currentTest'])) {
-        setcookie('currentTest', $selectedTest, time() + 36000);
-    } else {
-        setcookie('currentTest', "", time() - 36000);
     }
 }
 
