@@ -7,8 +7,8 @@
  */
 include "config/tests_cnf.php";
 
-$processForm = true;
-$showTest1 = false;
+$processForm = false;
+$showTest1 = true;
 $showResultTest1 = false;
 $showTest2 = false;
 $showTest3 = false;
@@ -66,15 +66,16 @@ if (isset($_POST['start'])) {
             break;
     }
 
-     //Establecemos cookie
-     if (!isset($_COOKIE['currentTest'])) {
-        setcookie('currentTest', $selectedTest, time() + 36000);
+    //Establecemos cookie
+    if (!isset($_COOKIE['test' . $selectedTest])) {
+        setcookie('test' . $selectedTest, $selectedTest, time() + 36000);
     } else {
-        setcookie('currentTest', "", time() - 36000);
+        setcookie('test' . $selectedTest, "", time() - 36000);
     }
 }
 
 if (isset($_POST['submitTest1'])) {
+    $processForm = false;
     $showTest1 = true;
     $showResultTest1 = true;
     $a_userAnswers = array();
@@ -97,21 +98,23 @@ if (isset($_POST['submitTest1'])) {
                         //Comprobamos si está respondida o no
                         if (isset($_POST[$i])) {
                             //Si ha respondido la pasamos a letra
+                            var_dump($_POST[$i]);
                             if ($answersTest1[$i] == $options[$_POST[$i]]) {
                                 array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "right"));
                             } else {
                                 array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "wrong"));
                             }
                         } else {
-                            array_push($a_userAnswers, array("option" => "nsnc", "status" => "nsnc"));
+                            //EN caso de no responder, lo consideramos correcto para que la pregunta salga con estilo en la solución
+                            array_push($a_userAnswers, array("option" => array_search($answersTest1[$i], $options), "status" => "right"));
                         }
                     }
+
+                    //var_dump($a_userAnswers);
                 }
             }
         }
     }
-
-    //var_dump($checked);
 }
 
 
@@ -122,7 +125,7 @@ if ($processForm) {
             background-color: #F3F4F5;
         }
 
-        main{
+        main {
             display: flex;
             justify-content: center;
         }
@@ -131,9 +134,9 @@ if ($processForm) {
             margin-top: 60px;
             padding: 10px;
             text-align: center;
-           
+
             width: 40%;
-            
+
         }
 
         h1 {
@@ -155,7 +158,7 @@ if ($processForm) {
             padding: 10px;
             cursor: pointer;
             background-color: #2164A5;
-            color:white;
+            color: white;
             font-size: 15px;
             border-radius: .28571429rem;
         }
@@ -237,6 +240,7 @@ if ($showTest1) {
             border-color: #cdcdcd;
             border-radius: .28571429rem;
         }
+
         #continueBtn {
             margin-top: 10px;
             margin-bottom: 10px;
@@ -244,7 +248,7 @@ if ($showTest1) {
             padding: 10px;
             cursor: pointer;
             background-color: #008f39;
-            color:white;
+            color: white;
             font-size: 15px;
             border-radius: .28571429rem;
         }
@@ -273,13 +277,12 @@ if ($showTest1) {
 
                                 echo "<p class='answer'>Respuestas</p>";
 
-                                //Imprime posibles respuestas
+                                //Imprime posibles respuestas, en este caso es un bucle de 3
                                 for ($i = 0; $i < count($value2['respuestas']); $i++) {
 
                                     //Muestra aciertos
                                     if ($showResultTest1) {
-                                        $correctOptionMsg = $answersTest1[$level2];
-
+                                        //var_dump($a_userAnswers[$level2]['option']);
                                         if (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "right")) {
                                             $className = "right";
                                         } elseif (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "wrong")) {
@@ -290,22 +293,8 @@ if ($showTest1) {
                                             $errors++;
                                         }
 
-                                        //Mensaje superación
-                                        if ($errors > 2) {
-                                            $resultMsg = "No has superado el test";
-                                        } else {
-                                            $resultMsg = "Has superado el test";
-                                        }
-
                                         //Desabilita radiobutton cuando muestra resultados
                                         $disabled = "disabled";
-
-                                        echo ('<br>' . $errors);
-                                        if ($showResultTest1) {
-                                            echo "<div id=\"resultMsg\">" . $resultMsg . "
-                                               <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
-                                           </div>";
-                                        }
                                     } else {
                                         $className = "";
                                         $disabled = "";
@@ -316,8 +305,10 @@ if ($showTest1) {
                                     echo "<input type=\"radio\" name=" . $name . " value=\"$i\" $disabled/>";
                                     echo ('<br>');
                                 }
+
                                 echo '<br>';
                                 if ($showResultTest1) {
+                                    $correctOptionMsg = $answersTest1[$level2];
                                     echo "<span> Respuesta correcta: " . $correctOptionMsg . "</span>";
                                 }
 
@@ -327,12 +318,20 @@ if ($showTest1) {
                     }
                 }
             }
+
+            if ($showResultTest1) {
+                //Mensaje superación
+                if ($errors > 2) {
+                    $resultMsg = "No has superado el test";
+                } else {
+                    $resultMsg = "Has superado el test";
+                }
+                //Muestra mensaje con resultado
+                echo "<div id=\"resultMsg\">" . $resultMsg . "
+                                               <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
+                                           </div>";
+            }
             ?>
-
-
-
-
-
             <button type="submit" name="submitTest1">Enviar</button>
         </form>
     </main>
