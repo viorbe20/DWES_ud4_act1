@@ -228,29 +228,36 @@ if ($showTest1) {
 
         #resultMsg {
             position: fixed;
-            font-size: 30px;
-            color: white;
-            text-align: center;
-            padding: 5px;
-            top: 20px;
+            top: 10px;
             right: 2%;
-            color: #008f39;
             background-color: #cdcdcd;
-            border-style: solid;
-            border-color: #cdcdcd;
             border-radius: .28571429rem;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
         }
 
-        #continueBtn {
+        #resultMsg > p {
+            color: #008f39;
+            font-size: 30px;
+            margin-left: 8px;
+            margin-right: 8px;
+        } 
+
+        #continueBtn, #repeatTest1Btn  {
             margin-top: 10px;
             margin-bottom: 10px;
-            width: 30%;
+            width: 40%;
             padding: 10px;
             cursor: pointer;
             background-color: #008f39;
             color: white;
             font-size: 15px;
             border-radius: .28571429rem;
+        }
+        #buttons{
+            display: flex;
+            justify-content: space-evenly;
         }
     </style>
     <main>
@@ -327,9 +334,14 @@ if ($showTest1) {
                     $resultMsg = "Has superado el test";
                 }
                 //Muestra mensaje con resultado
-                echo "<div id=\"resultMsg\">" . $resultMsg . "
-                                               <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
-                                           </div>";
+                echo 
+                "<div id=\"resultMsg\">
+                <p>" . $resultMsg . "</p>
+                <div id=\"buttons\">
+                <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
+                <button type=\"submit\" name=\"repeatTest1Btn\" id=\"repeatTest1Btn\">Repetir test</button>
+                </div>
+                </div>";
             }
             ?>
             <button type="submit" name="submitTest1">Enviar</button>
