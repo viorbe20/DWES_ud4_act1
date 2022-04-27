@@ -164,19 +164,31 @@ if ($showTest1) {
             color: black;
         }
 
-        #resultMsg{
-            position: absolute;
-            background-color: #2164A5;
-            width: 400px;
-            height: 200px;
-            top: 250px;
-            right: 40%;
+        #resultMsg {
+            position: fixed;
+            font-size: 30px;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            top: 20px;
+            right: 2%;
+            background-color: #008f39;
+            
+            border-radius: .28571429rem;
+        }
+
+        #continueBtn {
+           margin-top: 10px;
+           margin-bottom: 10px;
+            width: 30%;
+            padding: 10px;
+            cursor: pointer;
         }
     </style>
     <main>
         <form action="" method="post">
             <button type="submit" name="submitTest1">Enviar</button>
-           
+
             <h1>Test 1: Permiso B</h1>
             <?php
             foreach ($aTests as $key => $value) {
@@ -218,11 +230,18 @@ if ($showTest1) {
                                         if ($errors > 2) {
                                             $resultMsg = "No has superado el test";
                                         } else {
-                                            $resultMsg = "Has superado el test"; 
+                                            $resultMsg = "Has superado el test";
                                         }
 
                                         //Desabilita radiobutton cuando muestra resultados
                                         $disabled = "disabled";
+
+                                        echo('<br>'. $errors) ;
+                                        if ($showResultTest1) {
+                                           echo "<div id=\"resultMsg\">" . $resultMsg . "
+                                               <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
+                                           </div>";
+                                       }
                                     } else {
                                         $className = "";
                                         $disabled = "";
@@ -244,16 +263,15 @@ if ($showTest1) {
                     }
                 }
             }
-            //echo "<div id='resultMsg'>Has aprobado el examen</div>"; 
+            // echo "<div id='resultMsg'>Has aprobado el examen
+            // <button type='submit' name='continue' id='continueBtn'>Continuar</button>
+            // </div>";
             ?>
-            
-              
-<!--             
-            echo('<br>'. $errors) ;
-             if ($showResultTest1) {
-                echo "<div id='resultMsg'>" . $resultMsg . "</div>";
-            } -->
-            
+
+
+                        
+
+
             <button type="submit" name="submitTest1">Enviar</button>
         </form>
     </main>
