@@ -12,6 +12,8 @@ $showTest1 = false;
 $showTest2 = false;
 $showTest3 = false;
 $showResultTest1 = false;
+$showResultTest2 = false;
+$showResultTest3 = false;
 $correctAnswer;
 $options = ["a", "b", "c"];
 // $checked = array();
@@ -120,7 +122,6 @@ if (isset($_POST['start'])) {
 if (isset($_POST["submitTest1"])) {
     $showTest1 = true;
     $showResultTest1 = true;
-    $showTest1 = true;
     $a_userAnswers = array();
     $errors = 0;
 
@@ -137,17 +138,16 @@ if (isset($_POST["submitTest1"])) {
                     //Recorre como tantas preguntas tenga el test
                     for ($i = 0; $i < count($value); $i++) {
 
-                        //"Corrector"=>array("a","b","c", "c", "c", "a", "c", "a", "c", "a"),
                         //Comprobamos si está respondida o no
                         if (isset($_POST[$i])) {
                             //Si ha respondido la pasamos a letra
-                            if ($answersTest1[$i] == $options[$_POST[$i]]) {
+                            if ($answersTest2[$i] == $options[$_POST[$i]]) {
                                 array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "right"));
                             } else {
                                 array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "wrong"));
                             }
                         } else {
-                            array_push($a_userAnswers, array("option" => array_search($answersTest1[$i], $options), "status" => "right"));
+                            array_push($a_userAnswers, array("option" => array_search($answersTest2[$i], $options), "status" => "right"));
                         }
                     }
                 }
@@ -158,16 +158,87 @@ if (isset($_POST["submitTest1"])) {
     //var_dump($checked);
 }
 
-if ($showTest3) {
-    echo
-    "<form method=\"post\"><h1>Test 3</h1><div id=\"resultMsg\">
-    <div id=\"buttons\">
-    <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
-    <button type=\"submit\" name=\"repeatTest\" id=\"repeatTest1Btn\">Repetir test</button>
-    </div>
-    </div></form>";
-    //checkCookie($_COOKIE['currentTest']);
+//Muestra respuestas test 2
+if (isset($_POST["submitTest2"])) {
+    $showTest2 = true;
+    $showResultTest2 = true;
+    $a_userAnswers = array();
+    $errors = 0;
+
+    //Guardamos las respuestas seleccionadas
+    //var_dump($_POST); => Imprime número de pregunta e índice (0,1,2) según respuesta
+    foreach ($aTests as $key => $value) {
+
+        if ($key == 1) {
+
+            foreach ($value as $level1 => $value) {
+
+                if ($level1 == "Preguntas") {
+
+                    //Recorre como tantas preguntas tenga el test
+                    for ($i = 0; $i < count($value); $i++) {
+
+                        //Comprobamos si está respondida o no
+                        if (isset($_POST[$i])) {
+                            //Si ha respondido la pasamos a letra
+                            if ($answersTest2[$i] == $options[$_POST[$i]]) {
+                                array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "right"));
+                            } else {
+                                array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "wrong"));
+                            }
+                        } else {
+                            array_push($a_userAnswers, array("option" => array_search($answersTest2[$i], $options), "status" => "right"));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //var_dump($checked);
 }
+
+//Muestra respuestas test 3
+if (isset($_POST["submitTest3"])) {
+    $showTest3 = true;
+    $showResultTest3 = true;
+    $a_userAnswers = array();
+    $errors = 0;
+
+    //Guardamos las respuestas seleccionadas
+    //var_dump($_POST); => Imprime número de pregunta e índice (0,1,2) según respuesta
+    foreach ($aTests as $key => $value) {
+
+        if ($key == 2) {
+
+            foreach ($value as $level1 => $value) {
+
+                if ($level1 == "Preguntas") {
+
+                    //Recorre como tantas preguntas tenga el test
+                    for ($i = 0; $i < count($value); $i++) {
+
+                        //Comprobamos si está respondida o no
+                        if (isset($_POST[$i])) {
+                            //Si ha respondido la pasamos a letra
+                            if ($answersTest3[$i] == $options[$_POST[$i]]) {
+                                array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "right"));
+                            } else {
+                                array_push($a_userAnswers, array("option" => $_POST[$i], "status" => "wrong"));
+                            }
+                        } else {
+                            array_push($a_userAnswers, array("option" => array_search($answersTest3[$i], $options), "status" => "right"));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //var_dump($checked);
+}
+
+
 //Página de inicio
 if ($processForm) {
 ?>
@@ -234,85 +305,19 @@ if ($processForm) {
 
 <?php
 }
+function getCss()
+{
+    $css = file_get_contents("css/style.css");
+    $content =  <<<EOD
+    <style>$css</style>
+    EOD;
+    return $content;
+}
 
 //Muestra test1
 if ($showTest1) {
+    echo getCss();
 ?>
-    <style>
-        main {
-            padding: 10px;
-        }
-
-        h1 {
-            *color: blue;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .question {
-            background-color: #EBEFF0;
-        }
-
-        h3 {
-            background-color: #2164A5;
-            padding: 10px;
-            color: white;
-        }
-
-        .answer {
-            font-weight: bold;
-        }
-
-        .right {
-            background-color: green;
-            color: white;
-        }
-
-        .wrong {
-            background-color: red;
-            color: white;
-        }
-
-        .nsnc {
-            color: black;
-        }
-
-        #resultMsg {
-            position: fixed;
-            top: 10px;
-            right: 2%;
-            background-color: #cdcdcd;
-            border-radius: .28571429rem;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        #resultMsg>p {
-            color: #008f39;
-            font-size: 30px;
-            margin-left: 8px;
-            margin-right: 8px;
-        }
-
-        #continueBtn,
-        #repeatTest1Btn {
-            margin-top: 10px;
-            margin-bottom: 10px;
-            width: 40%;
-            padding: 10px;
-            cursor: pointer;
-            background-color: #008f39;
-            color: white;
-            font-size: 15px;
-            border-radius: .28571429rem;
-        }
-
-        #buttons {
-            display: flex;
-            justify-content: space-evenly;
-        }
-    </style>
     <main>
         <form action="" method="post">
             <button type="submit" name="submitTest1">Enviar</button>
@@ -392,7 +397,7 @@ if ($showTest1) {
                 <p>" . $resultMsg . "</p>
                 <div id=\"buttons\">
                 <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
-                <button type=\"submit\" name=\"repeatTest\" id=\"repeatTest1Btn\">Repetir test</button>
+                <button type=\"submit\" name=\"repeatTest\" id=\"repeatTestBtn\">Repetir test</button>
                 </div>
                 </div>";
             }
@@ -403,111 +408,192 @@ if ($showTest1) {
 <?php
 }
 
-
-
+//Muestra test2
 if ($showTest2) {
-  
+    echo getCss();
 ?>
-<?php
-$css = file_get_contents("css/style.css");
-echo "<style>" . $css . "</style";
-?>
-        <main>
-            <form action="" method="post">
-                <button type="submit" name="submitTest1">Enviar</button>
-    
-                <h1>Test 2: Permiso B</h1>
-                <?php
-                foreach ($aTests as $key => $value) {
-                    if ($key == 1) {
-                        foreach ($value as $level1 => $value) {
-                            if ($level1 == "Preguntas") {
-                                //var_dump($value);
-                                foreach ($value as $level2 => $value2) {
-    
-                                    //echo('<br>'. $level2);// 0 a 9
-                                    echo "<div class='question'>";
-                                    echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
-    
-                                    //Comprueba si la foto existe
-                                    if (file_exists("dir_img_test1/img" . $value2['idPregunta'] . ".jpg")) {
-                                        echo "<img src=dir_img_test1/img" . $value2['idPregunta'] . ".jpg>";
-                                    }
-    
-                                    echo "<p class='answer'>Respuestas</p>";
-    
-                                    //Imprime posibles respuestas, en este caso es un bucle de 3
-                                    for ($i = 0; $i < count($value2['respuestas']); $i++) {
-    
-                                        //Muestra aciertos
-                                        if ($showResultTest1) {
-                                            //var_dump($a_userAnswers[$level2]['option']);
-                                            if (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "right")) {
-                                                $className = "right";
-                                            } elseif (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "wrong")) {
-                                                $className = "wrong";
-                                                $errors++;
-                                            } else {
-                                                $className = "nsnc";
-                                                $errors++;
-                                            }
-    
-                                            //Desabilita radiobutton cuando muestra resultados
-                                            $disabled = "disabled";
-                                        } else {
-                                            $className = "";
-                                            $disabled = "";
-                                        }
-    
-                                        echo "<label class=\"$className\">" . $value2['respuestas'][$i] . "</label>";
-                                        $name = ($value2['idPregunta'] - 1);
-                                        echo "<input type=\"radio\" name=" . $name . " value=\"$i\" $disabled/>";
-                                        echo ('<br>');
-                                    }
-    
-                                    echo '<br>';
-                                    if ($showResultTest1) {
-                                        $correctOptionMsg = $answersTest1[$level2];
-                                        echo "<span> Respuesta correcta: " . $correctOptionMsg . "</span>";
-                                    }
-    
-                                    echo ("</div>");
+    <main>
+        <form action="" method="post">
+            <button type="submit" name="submitTest2">Enviar</button>
+
+            <h1>Test 2: Permiso B</h1>
+            <?php
+            foreach ($aTests as $key => $value) {
+                if ($key == 1) {
+                    foreach ($value as $level1 => $value) {
+                        if ($level1 == "Preguntas") {
+                            //var_dump($value);
+                            foreach ($value as $level2 => $value2) {
+
+                                //echo('<br>'. $level2);// 0 a 9
+                                echo "<div class='question'>";
+                                echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
+
+                                //Comprueba si la foto existe
+                                if (file_exists("dir_img_test2/img" . $value2['idPregunta'] . ".jpg")) {
+                                    echo "<img src=dir_img_test2/img" . $value2['idPregunta'] . ".jpg>";
                                 }
+
+                                echo "<p class='answer'>Respuestas</p>";
+
+                                //Imprime posibles respuestas, en este caso es un bucle de 3
+                                for ($i = 0; $i < count($value2['respuestas']); $i++) {
+
+                                    //Muestra aciertos
+                                    if ($showResultTest2) {
+                                        //var_dump($a_userAnswers[$level2]['option']);
+                                        if (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "right")) {
+                                            $className = "right";
+                                        } elseif (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "wrong")) {
+                                            $className = "wrong";
+                                            $errors++;
+                                        } else {
+                                            $className = "nsnc";
+                                            $errors++;
+                                        }
+
+                                        //Desabilita radiobutton cuando muestra resultados
+                                        $disabled = "disabled";
+                                    } else {
+                                        $className = "";
+                                        $disabled = "";
+                                    }
+
+                                    echo "<label class=\"$className\">" . $value2['respuestas'][$i] . "</label>";
+                                    $name = ($value2['idPregunta'] - 1);
+                                    echo "<input type=\"radio\" name=" . $name . " value=\"$i\" $disabled/>";
+                                    echo ('<br>');
+                                }
+
+                                echo '<br>';
+                                if ($showResultTest2) {
+                                    $correctOptionMsg = $answersTest2[$level2];
+                                    echo "<span> Respuesta correcta: " . $correctOptionMsg . "</span>";
+                                }
+
+                                echo ("</div>");
                             }
                         }
                     }
                 }
-    
-                if ($showResultTest1) {
-                    //Mensaje superación
-                    if ($errors > 2) {
-                        $resultMsg = "No has superado el test";
-                    } else {
-                        $resultMsg = "Has superado el test";
-                    }
-                    //Muestra mensaje con resultado
-                    echo
-                    "<div id=\"resultMsg\">
-                    <p>" . $resultMsg . "</p>
-                    <div id=\"buttons\">
-                    <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
-                    <button type=\"submit\" name=\"repeatTest\" id=\"repeatTest1Btn\">Repetir test</button>
-                    </div>
-                    </div>";
+            }
+
+            if ($showResultTest2) {
+                //Mensaje superación
+                if ($errors > 2) {
+                    $resultMsg = "No has superado el test";
+                } else {
+                    $resultMsg = "Has superado el test";
                 }
-                ?>
-                <button type="submit" name="submitTest1">Enviar</button>
-            </form>
-        </main>
-    <?php
-    }
-
-//if ($showTest3) {
-if ($s) {
-?>
-    <h1>Test 3: Permiso B</h1>
-
+                //Muestra mensaje con resultado
+                echo
+                "<div id=\"resultMsg\">
+                <p>" . $resultMsg . "</p>
+                <div id=\"buttons\">
+                <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
+                <button type=\"submit\" name=\"repeatTest\" id=\"repeatTestBtn\">Repetir test</button>
+                </div>
+                </div>";
+            }
+            ?>
+            <button type="submit" name="submitTest2">Enviar</button>
+        </form>
+    </main>
 <?php
-
 }
+
+//Muestra test3
+if ($showTest3) {
+    echo getCss();
+?>
+    <main>
+        <form action="" method="post">
+            <button type="submit" name="submitTest3">Enviar</button>
+
+            <h1>Test 3: Permiso B</h1>
+            <?php
+            foreach ($aTests as $key => $value) {
+                if ($key == 2) {
+                    foreach ($value as $level1 => $value) {
+                        if ($level1 == "Preguntas") {
+                            //var_dump($value);
+                            foreach ($value as $level2 => $value2) {
+
+                                //echo('<br>'. $level2);// 0 a 9
+                                echo "<div class='question'>";
+                                echo "<h3>Pregunta " . $value2['Pregunta'] . "</h3>";
+
+                                //Comprueba si la foto existe
+                                if (file_exists("dir_img_test3/img" . $value2['idPregunta'] . ".jpg")) {
+                                    echo "<img src=dir_img_test3/img" . $value2['idPregunta'] . ".jpg>";
+                                }
+
+                                echo "<p class='answer'>Respuestas</p>";
+
+                                //Imprime posibles respuestas, en este caso es un bucle de 3
+                                for ($i = 0; $i < count($value2['respuestas']); $i++) {
+
+                                    //Muestra aciertos
+                                    if ($showResultTest1) {
+                                        //var_dump($a_userAnswers[$level2]['option']);
+                                        if (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "right")) {
+                                            $className = "right";
+                                        } elseif (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "wrong")) {
+                                            $className = "wrong";
+                                            $errors++;
+                                        } else {
+                                            $className = "nsnc";
+                                            $errors++;
+                                        }
+
+                                        //Desabilita radiobutton cuando muestra resultados
+                                        $disabled = "disabled";
+                                    } else {
+                                        $className = "";
+                                        $disabled = "";
+                                    }
+
+                                    echo "<label class=\"$className\">" . $value2['respuestas'][$i] . "</label>";
+                                    $name = ($value2['idPregunta'] - 1);
+                                    echo "<input type=\"radio\" name=" . $name . " value=\"$i\" $disabled/>";
+                                    echo ('<br>');
+                                }
+
+                                echo '<br>';
+                                if ($showResultTest3) {
+                                    $correctOptionMsg = $answersTest3[$level2];
+                                    echo "<span> Respuesta correcta: " . $correctOptionMsg . "</span>";
+                                }
+
+                                echo ("</div>");
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ($showResultTest3) {
+                //Mensaje superación
+                if ($errors > 2) {
+                    $resultMsg = "No has superado el test";
+                } else {
+                    $resultMsg = "Has superado el test";
+                }
+                //Muestra mensaje con resultado
+                echo
+                "<div id=\"resultMsg\">
+                <p>" . $resultMsg . "</p>
+                <div id=\"buttons\">
+                <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
+                <button type=\"submit\" name=\"repeatTest\" id=\"repeatTestBtn\">Repetir test</button>
+                </div>
+                </div>";
+            }
+            ?>
+            <button type="submit" name="submitTest3">Enviar</button>
+        </form>
+    </main>
+<?php
+}
+
 ?>
