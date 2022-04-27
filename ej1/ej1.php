@@ -15,7 +15,7 @@ $showTest3 = false;
 $correctAnswer;
 $options = ["a", "b", "c"];
 // $checked = array();
-$message = "";
+$correctOptionMsg = "";
 
 /**
  * Devuelve un array de respuestas.
@@ -68,6 +68,7 @@ if (isset($_POST['submitTest1'])) {
     $showTest1 = true;
     $showResultTest1 = true;
     $a_userAnswers = array();
+    $errors = 0;
 
     //Guardamos las respuestas seleccionadas
     //var_dump($_POST); => Imprime número de pregunta e índice (0,1,2) según respuesta
@@ -162,10 +163,20 @@ if ($showTest1) {
         .nsnc {
             color: black;
         }
+
+        #resultMsg{
+            position: absolute;
+            background-color: #2164A5;
+            width: 400px;
+            height: 200px;
+            top: 250px;
+            right: 40%;
+        }
     </style>
     <main>
         <form action="" method="post">
             <button type="submit" name="submitTest1">Enviar</button>
+           
             <h1>Test 1: Permiso B</h1>
             <?php
             foreach ($aTests as $key => $value) {
@@ -191,27 +202,40 @@ if ($showTest1) {
 
                                     //Muestra aciertos
                                     if ($showResultTest1) {
-                                        $message = $answersTest1[$level2];
+                                        $correctOptionMsg = $answersTest1[$level2];
 
                                         if (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "right")) {
                                             $className = "right";
                                         } elseif (($a_userAnswers[$level2]['option'] == $i) && ($a_userAnswers[$level2]['status'] == "wrong")) {
                                             $className = "wrong";
+                                            $errors++;
                                         } else {
                                             $className = "nsnc";
+                                            $errors++;
                                         }
+
+                                        //Mensaje superación
+                                        if ($errors > 2) {
+                                            $resultMsg = "No has superado el test";
+                                        } else {
+                                            $resultMsg = "Has superado el test"; 
+                                        }
+
+                                        //Desabilita radiobutton cuando muestra resultados
+                                        $disabled = "disabled";
                                     } else {
                                         $className = "";
+                                        $disabled = "";
                                     }
 
                                     echo "<label class=\"$className\">" . $value2['respuestas'][$i] . "</label>";
                                     $name = ($value2['idPregunta'] - 1);
-                                    echo "<input type=\"radio\" name=" . $name . " value=\"$i\"/>";
+                                    echo "<input type=\"radio\" name=" . $name . " value=\"$i\" $disabled/>";
                                     echo ('<br>');
                                 }
                                 echo '<br>';
                                 if ($showResultTest1) {
-                                    echo "<span> Respuesta correcta: " . $message . "</span>";
+                                    echo "<span> Respuesta correcta: " . $correctOptionMsg . "</span>";
                                 }
 
                                 echo ("</div>");
@@ -220,8 +244,16 @@ if ($showTest1) {
                     }
                 }
             }
+            //echo "<div id='resultMsg'>Has aprobado el examen</div>"; 
             ?>
-            <br>
+            
+              
+<!--             
+            echo('<br>'. $errors) ;
+             if ($showResultTest1) {
+                echo "<div id='resultMsg'>" . $resultMsg . "</div>";
+            } -->
+            
             <button type="submit" name="submitTest1">Enviar</button>
         </form>
     </main>
