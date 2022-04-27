@@ -7,8 +7,8 @@
  */
 include "config/tests_cnf.php";
 
-$processForm = false;
-$showTest1 = true;
+$processForm = true;
+$showTest1 = false;
 $showResultTest1 = false;
 $showTest2 = false;
 $showTest3 = false;
@@ -107,18 +107,67 @@ if (isset($_POST['submitTest1'])) {
 
 if ($processForm) {
 ?>
-    <h1>Test online Autoescuela</h1>
-    <h3>Selecciona el test por el que quieras comenzar.</h3>
-    <form action="" method="post">
-        <select name="selectedTest">
-            <option value="1">Test 1</option>
-            <option value="2">Test 2</option>
-            <option value="3">Test 3</option>
-        </select>
-        <br>
-        <br>
-        <button type="submit" name="start">Comenzar</button>
-    </form>
+    <style>
+        body {
+            background-color: #F3F4F5;
+        }
+
+        main{
+            display: flex;
+            justify-content: center;
+        }
+
+        #container {
+            margin-top: 60px;
+            padding: 10px;
+            text-align: center;
+           
+            width: 40%;
+            
+        }
+
+        h1 {
+            color: #2164A5;
+            *background-color: pink;
+            padding: 10px;
+            text-align: center;
+            font-size: 40px;
+        }
+
+        select {
+            font-size: 15px;
+            padding: 5px;
+        }
+
+        #startBtn {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            cursor: pointer;
+            background-color: #2164A5;
+            color:white;
+            font-size: 15px;
+            border-radius: .28571429rem;
+        }
+    </style>
+    <main>
+        <div id=container>
+            <h1>Test online Autoescuela</h1>
+            <h3>Selecciona el test por el que quieras comenzar.</h3>
+            <form action="" method="post">
+                <select name="selectedTest" id="select">
+                    <option value="1">Test 1</option>
+                    <option value="2">Test 2</option>
+                    <option value="3">Test 3</option>
+                </select>
+                <br>
+                <br>
+                <button type="submit" name="start" id="startBtn">Comenzar</button>
+            </form>
+        </div>
+
+    </main>
+
 <?php
 }
 
@@ -172,17 +221,22 @@ if ($showTest1) {
             padding: 5px;
             top: 20px;
             right: 2%;
-            background-color: #008f39;
-            
+            color: #008f39;
+            background-color: #cdcdcd;
+            border-style: solid;
+            border-color: #cdcdcd;
             border-radius: .28571429rem;
         }
-
         #continueBtn {
-           margin-top: 10px;
-           margin-bottom: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
             width: 30%;
             padding: 10px;
             cursor: pointer;
+            background-color: #008f39;
+            color:white;
+            font-size: 15px;
+            border-radius: .28571429rem;
         }
     </style>
     <main>
@@ -236,12 +290,12 @@ if ($showTest1) {
                                         //Desabilita radiobutton cuando muestra resultados
                                         $disabled = "disabled";
 
-                                        echo('<br>'. $errors) ;
+                                        echo ('<br>' . $errors);
                                         if ($showResultTest1) {
-                                           echo "<div id=\"resultMsg\">" . $resultMsg . "
+                                            echo "<div id=\"resultMsg\">" . $resultMsg . "
                                                <button type=\"submit\" name=\"continue\" id=\"continueBtn\">Continuar</button>
                                            </div>";
-                                       }
+                                        }
                                     } else {
                                         $className = "";
                                         $disabled = "";
@@ -263,13 +317,10 @@ if ($showTest1) {
                     }
                 }
             }
-            // echo "<div id='resultMsg'>Has aprobado el examen
-            // <button type='submit' name='continue' id='continueBtn'>Continuar</button>
-            // </div>";
             ?>
 
 
-                        
+
 
 
             <button type="submit" name="submitTest1">Enviar</button>
