@@ -1,0 +1,42 @@
+
+            body {
+                background-color: #F3F4F5;
+            }
+
+            main {
+                display: flex;
+                justify-content: center;
+            }
+
+            #container {
+                margin-top: 60px;
+                padding: 10px;
+                text-align: center;
+
+                width: 40%;
+
+            }
+
+            h1 {
+                color: #2164A5;
+                *background-color: pink;
+                padding: 10px;
+                text-align: center;
+                font-size: 40px;
+            }
+
+            select {
+                font-size: 15px;
+                padding: 5px;
+            }
+
+            #startBtn {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                padding: 10px;
+                cursor: pointer;
+                background-color: #2164A5;
+                color: white;
+                font-size: 15px;
+                border-radius: .28571429rem;
+            }

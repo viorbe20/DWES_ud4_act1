@@ -18,37 +18,17 @@ $correctOptionMsg = "";
 $continueTest = false;
 
 if (isset($_POST["restart"])) {
-    setcookie('currentTest',"", time() - 1000);
+    setcookie('currentTest', "", time() - 1000);
     setcookie('test1', "", time() - 1000);
     setcookie('test2', "", time() - 1000);
     setcookie('test3', "", time() - 1000);
-    $processForm = true; 
-} 
+    $processForm = true;
+}
 
 if ((isset($_COOKIE["test1"])) and (isset($_COOKIE["test2"])) and (isset($_COOKIE["test3"]))) {
-    echo "<style>
-    body {
-        background-color: #F3F4F5;
-    }
 
-    form {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center
-    }
-    h1 {
-        color: #2164A5;
-        *background-color: pink;
-        padding: 10px;
-        text-align: center;
-        font-size: 40px;
-    }
-
-    #restartBtn{
-        width: 20%;
-    }
-    </style>
+    $css = file_get_contents("css/lastPage.css");
+    echo "<style>$css</style>
     <form method=\"post\">
     <h1>Has realizado todos los tests</h1>
     <button type=\"submit\" name=\"restart\" id=\"restartBtn\">Comenzar</button>
@@ -283,50 +263,9 @@ if ((isset($_COOKIE["test1"])) and (isset($_COOKIE["test2"])) and (isset($_COOKI
 
     //Página de inicio
     if ($processForm) {
+        $css = file_get_contents("css/mainPage.css");
+        echo "<style>$css</style>";
 ?>
-        <style>
-            body {
-                background-color: #F3F4F5;
-            }
-
-            main {
-                display: flex;
-                justify-content: center;
-            }
-
-            #container {
-                margin-top: 60px;
-                padding: 10px;
-                text-align: center;
-
-                width: 40%;
-
-            }
-
-            h1 {
-                color: #2164A5;
-                *background-color: pink;
-                padding: 10px;
-                text-align: center;
-                font-size: 40px;
-            }
-
-            select {
-                font-size: 15px;
-                padding: 5px;
-            }
-
-            #startBtn {
-                margin-top: 10px;
-                margin-bottom: 10px;
-                padding: 10px;
-                cursor: pointer;
-                background-color: #2164A5;
-                color: white;
-                font-size: 15px;
-                border-radius: .28571429rem;
-            }
-        </style>
         <main>
             <div id=container>
                 <h1>Test online Autoescuela</h1>
