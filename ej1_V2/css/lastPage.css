@@ -1,0 +1,21 @@
+body {
+    background-color: #F3F4F5;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center
+}
+h1 {
+    color: #2164A5;
+    *background-color: pink;
+    padding: 10px;
+    text-align: center;
+    font-size: 40px;
+}
+
+#restartBtn{
+    width: 20%;
+}
