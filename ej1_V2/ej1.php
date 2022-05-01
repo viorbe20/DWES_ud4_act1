@@ -7,9 +7,10 @@
  */
 include "config/tests_cnf.php";
 
-$processForm = true;
+$processForm = false;
 $showTest1 = false;
 $showSolution = false;
+$showFinalPage = false;
 
 //Cuenta número de cookies
 //$cookiesAmount = array_count_values($_COOKIE);
@@ -34,6 +35,11 @@ function getTestSolution($selectedTest, $aTests)
  */
 function showSelectedTest($selectedTest, $aTests, $showSolution, $aUserAnswers)
 {
+    //Creamos cookie de nuevo test
+    if (!isset($_COOKIE["test" . ($selectedTest + 1)])) {
+        setcookie("test" . (($selectedTest + 1)), "test" . (($selectedTest + 1)), time() + 36000);
+    }
+
     $errors = 0;
     $options = ["a", "b", "c"];
     $css = file_get_contents("css/style.css");
@@ -93,7 +99,6 @@ function showSelectedTest($selectedTest, $aTests, $showSolution, $aUserAnswers)
                             }
 
                             echo "<label class=\"$className\">" . $value2['respuestas'][$i] . "</label>";
-                            //$name = ($value2['idPregunta']);
                             echo "<input type=\"radio\" name=" . ($value2["idPregunta"] - 1) .  " value=\"$i\" $disabled/>";
                             echo ('<br>');
                         }
@@ -132,6 +137,94 @@ function showSelectedTest($selectedTest, $aTests, $showSolution, $aUserAnswers)
     echo "</form></main>";
 }
 
+//Empieza el test donde se quedó
+if (!isset($_COOKIE["currentTest"])) {
+    $processForm = true;
+} else {
+    $processForm = false;
+
+    //Borra las cookies si se comienza de nuevo
+    if (isset($_POST["restart"])) {
+        setcookie('currentTest', "", time() - 1000);
+        setcookie('test1', "", time() - 1000);
+        setcookie('test2', "", time() - 1000);
+        setcookie('test3', "", time() - 1000);
+        $processForm = true;
+    }
+
+    //Carga el test en el que se quedara
+    if (!isset($_POST["continue"])) {
+        showSelectedTest(($_COOKIE["currentTest"]), $aTests, false, "");
+    }
+    //Muestra test con respuestas corregidas
+    if (isset($_POST["submitTest"])) {
+        $processForm = false;
+        $selectedTest = $_COOKIE['currentTest'];
+        $aUserAnswers = array();
+        $showSolution = true;
+        $aTestSolution = getTestSolution($selectedTest, $aTests);
+        $options = ["a", "b", "c"];
+
+        //Obtenemos las respuestas marcadas por el usuario
+        foreach ($aTests as $key => $value) {
+
+            if ($key == $selectedTest) {
+
+                foreach ($value as $level1 => $value) {
+
+                    if ($level1 == "Preguntas") {
+
+                        //Recorre tantas veces como preguntas tenga el test
+                        for ($i = 0; $i < count($value); $i++) {
+
+                            //Comprobamos si está respondida o no
+                            if (isset($_POST[$i])) {
+                                //Si ha respondido la pasamos a letra
+                                if ($aTestSolution[$i] == $options[$_POST[$i]]) {
+                                    array_push($aUserAnswers, array("option" => $_POST[$i], "status" => "right"));
+                                } else {
+                                    array_push($aUserAnswers, array("option" => $_POST[$i], "status" => "wrong"));
+                                }
+                            } else {
+                                array_push($aUserAnswers, array("option" => array_search($aTestSolution[$i], $options), "status" => "right"));
+                            }
+                        }
+                        var_dump($aUserAnswers);
+                    }
+                }
+            }
+        }
+
+        showSelectedTest($selectedTest, $aTests, $showSolution, $aUserAnswers);
+    }
+
+    //Repite test
+    if (isset($_POST['repeatTest'])) {
+        $processForm = false;
+        showSelectedTest($_COOKIE['currentTest'], $aTests, false, "");
+    }
+
+    //Pasa al test siguiente
+    if (isset($_POST["continue"])) {
+
+        //Comprueba si se han realizado todos los tests según número de cookies creadas
+        if (count(array_count_values($_COOKIE)) == (count($aTests) + 1)) {
+            $processForm = false;
+            $showFinalPage = true;
+        } else {
+
+            //Actualizamos cookie con el número de test actual (empieza por 0)
+            if ($_COOKIE["currentTest"] == (count($aTests) - 1)) {
+                setcookie('currentTest', 0, time() + 36000);
+            } else {
+                setcookie('currentTest', ($_COOKIE["currentTest"] + 1), time() + 36000);
+            }
+
+            showSelectedTest(($_COOKIE["currentTest"] + 1), $aTests, false, "");
+        }
+    }
+}
+
 //Tras el botón comenzar
 if (isset($_POST["start"])) {
     $processForm = false;
@@ -144,58 +237,6 @@ if (isset($_POST["start"])) {
 
     showSelectedTest($selectedTest, $aTests, $showSolution, $aUserAnswers);
 }
-
-//Muestra test con respuestas corregidas
-if (isset($_POST["submitTest"])) {
-    $processForm = false;
-    $selectedTest = $_COOKIE['currentTest'];
-    $aUserAnswers = array();
-    $showSolution = true;
-    $aTestSolution = getTestSolution($selectedTest, $aTests);
-    $options = ["a", "b", "c"];
-
-    //Obtenemos las respuestas marcadas por el usuario
-    foreach ($aTests as $key => $value) {
-
-        if ($key == $selectedTest) {
-
-            foreach ($value as $level1 => $value) {
-
-                if ($level1 == "Preguntas") {
-
-                    //Recorre tantas veces como preguntas tenga el test
-                    for ($i = 0; $i < count($value); $i++) {
-
-                        //Comprobamos si está respondida o no
-                        if (isset($_POST[$i])) {
-                            //Si ha respondido la pasamos a letra
-                            if ($aTestSolution[$i] == $options[$_POST[$i]]) {
-                                array_push($aUserAnswers, array("option" => $_POST[$i], "status" => "right"));
-                            } else {
-                                array_push($aUserAnswers, array("option" => $_POST[$i], "status" => "wrong"));
-                            }
-                        } else {
-                            array_push($aUserAnswers, array("option" => array_search($aTestSolution[$i], $options), "status" => "right"));
-                        }
-                    }
-                    var_dump($aUserAnswers);
-                }
-            }
-        }
-    }
-
-    showSelectedTest($selectedTest, $aTests, $showSolution, $aUserAnswers);
-}
-
-//Repite test
-if (isset($_POST['repeatTest'])) {
-    $processForm = false;
-    $selectedTest = $_COOKIE['currentTest'];
-    $aUserAnswers = array();
-    $showSolution = false;
-    showSelectedTest($selectedTest, $aTests, $showSolution, $aUserAnswers);
-}
-
 //Muestra página inicial. Muestra tantos tests como tenga el array
 if ($processForm) {
     $css = file_get_contents("css/mainPage.css");
@@ -223,5 +264,20 @@ if ($processForm) {
 <?php
 }
 
+//Muestra página final
+if ($showFinalPage) {
 
+    $css = file_get_contents("css/lastPage.css");
+?>
+
+    <style>
+        <?php echo $css ?>
+    </style>
+    <form method="post">
+        <h1>Has realizado todos los tests</h1>
+        <button type="submit" name="restart" id="restartBtn">Comenzar</button>
+    </form>
+<?php
+
+}
 ?>
