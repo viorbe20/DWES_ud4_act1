@@ -5,5 +5,5 @@
     //Cierre de sesión
     session_destroy();
     //Dirigimos a la página principal
-    header('location: index.php');
+    header('location: ej2.php');
 ?>
