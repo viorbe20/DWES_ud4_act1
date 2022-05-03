@@ -9,16 +9,12 @@
  * @source images from https://pixabay.com/es/users/ptra-359668/
  */
 
-
 define("PICTURES_NUMBER", 6);
-
-
 $css = file_get_contents("css/style.css");
 $donePuzzles = "";
 $x = "";
 $y = "";
 $aUserParts = array();
-
 
 session_start();
 
