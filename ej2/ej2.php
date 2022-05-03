@@ -7,6 +7,8 @@
  * Aplica criterios de usabilidad en el diseño de la aplicación intentando conseguir la mejor experiencia de
  * usuario.
  * @source images from https://pixabay.com/es/users/ptra-359668/
+ * @author Virginia Ordoño Bernier
+ * @since April 2022
  */
 
 define("PICTURES_NUMBER", 6);
